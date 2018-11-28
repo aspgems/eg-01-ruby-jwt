@@ -4,8 +4,11 @@ require './example_base'
 require './list_envelopes'
 require './list_templates'
 require './list_documents'
+require './create_envelope'
+require './create_signing_url'
 require 'yaml'
-class Main
+
+class MainCreateEnvelope
   def run
     configuration = DocuSign_eSign::Configuration.new
     @api_client = DocuSign_eSign::ApiClient.new(configuration)
@@ -20,10 +23,11 @@ class Main
     puts templates_list.envelope_templates[0].template_id
     print "\nResults444444444444444: \n"
     print("\nDone.\n")
-    a = ListDocuments.new(@api_client).list(templates_list.envelope_templates[0].template_id)
-    puts a.template_documents
+
+    a = CreateEnvelope.new(@api_client).create(templates_list.envelope_templates[0].template_id)
+    b = CreateSigningUrl.new(@api_client).create(a.envelope_id)
     puts a.inspect
-    puts a.class
+
 
   rescue DocuSign_eSign::ApiError => err
     print "DocuSign SDK Error!\n   code: #{err.code}\n   message: #{err.response_body}\n\n"
@@ -31,6 +35,6 @@ class Main
 end
 
 if __FILE__ == $0
-  @main = Main.new()
+  @main = MainCreateEnvelope.new()
   @main.run
 end
